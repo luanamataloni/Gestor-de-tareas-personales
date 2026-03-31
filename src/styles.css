@@ -1,0 +1,38 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: #f6f7fb; color: #222; }
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.hero { background: linear-gradient(180deg,#1976d2,#4dabf7); color: white; padding: 28px 16px 36px; border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; }
+.hero-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.greeting h1 { margin: 0 0 8px; font-size: 24px; }
+.greeting .date { margin: 0; opacity: 0.95; font-size: 13px; }
+.counters { display: flex; gap: 12px; }
+.counter { background: rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 10px; min-width: 110px; text-align: left; }
+.counter .label { font-size: 12px; opacity: 0.9; }
+.counter .value { font-size: 20px; font-weight: 700; }
+.counter .green { color: #4caf50; }
+
+.container { max-width: 900px; margin: 18px auto; padding: 0 16px; flex: 1; }
+.add { display: flex; flex-direction: column; gap: 12px; }
+.add-form { display: flex; gap: 8px; }
+.add-form input { flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #e3e7ee; background: white; }
+.btn-add { width: 48px; border-radius: 10px; background: #1976d2; color: white; border: none; font-size: 20px; }
+.filters { display: flex; gap: 8px; }
+.filters button { padding: 8px 12px; border-radius: 8px; border: 1px solid #e3e7ee; background: white; }
+.filters .active { background: #1976d2; color: white; border-color: #1976d2; }
+
+.tasks { margin-top: 6px; }
+.tasks ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.tasks li { background: white; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eef2f6; }
+.tasks li.done .text { text-decoration: line-through; color: #777; }
+.tasks .text { margin-left: 8px; }
+.actions button { margin-left: 6px; background: transparent; border: none; cursor: pointer; }
+.empty { text-align: center; padding: 36px 12px; color: #7a8aa3; }
+.empty-ico { font-size: 36px; margin-bottom: 8px; }
+
+.footer { text-align: center; padding: 12px 0; color: #8b98ad; font-size: 13px; }
+
+@media (max-width: 640px) {
+  .hero-inner { flex-direction: column; align-items: flex-start; }
+  .counters { width: 100%; justify-content: space-between; }
+}
+
