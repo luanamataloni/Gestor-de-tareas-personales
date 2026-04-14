@@ -1,38 +1,375 @@
+/* -------------------------
+   Variables globales
+   ------------------------- */
+:root {
+  --bg: #f6f7fb;
+  --text: #222;
+  --muted: #7a8aa3;
+  --muted-2: #8b98ad;
+  --hero-start: #1976d2;
+  --hero-end: #4dabf7;
+  --hero-start-rgb: 25,118,210; /* RGB for hover rgba */
+  --hero-end-rgb: 77,171,247;
+  --primary: #1976d2;
+  --success: #4caf50;
+  --card-bg: #ffffff;
+  --input-border: #e3e7ee;
+  --panel-border: #eef2f6;
+  --radius: 10px;
+  --radius-lg: 18px;
+  --max-width: 900px;
+  --shadow: 0 6px 18px rgba(20,40,70,0.06);
+  --gap: 12px;
+}
+
+/* -------------------------
+   Base
+   ------------------------- */
 * { box-sizing: border-box; }
-body { margin: 0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: #f6f7fb; color: #222; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* -------------------------
+   Layout
+   ------------------------- */
 .app { min-height: 100vh; display: flex; flex-direction: column; }
-.hero { background: linear-gradient(180deg,#1976d2,#4dabf7); color: white; padding: 28px 16px 36px; border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; }
-.hero-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.container { max-width: var(--max-width); margin: 18px auto; padding: 0 16px; flex: 1; }
+
+/* Header / Hero */
+.hero {
+  background: linear-gradient(180deg, var(--hero-start), var(--hero-end));
+  color: white;
+  padding: 28px 16px 36px;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+.hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column; /* centramos verticalmente el saludo y colocamos la tarjeta de contadores debajo */
+  align-items: center;
+  gap: 16px;
+}
+
+/* greeting centrado */
+.greeting { text-align: center; }
 .greeting h1 { margin: 0 0 8px; font-size: 24px; }
 .greeting .date { margin: 0; opacity: 0.95; font-size: 13px; }
-.counters { display: flex; gap: 12px; }
-.counter { background: rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 10px; min-width: 110px; text-align: left; }
-.counter .label { font-size: 12px; opacity: 0.9; }
-.counter .value { font-size: 20px; font-weight: 700; }
-.counter .green { color: #4caf50; }
 
-.container { max-width: 900px; margin: 18px auto; padding: 0 16px; flex: 1; }
-.add { display: flex; flex-direction: column; gap: 12px; }
+/* tarjetas de contadores: estilo específico para que sean blancas, centradas y con sombra */
+.counters.counters-card {
+  width: 100%;
+  max-width: 820px;
+  margin-top: 8px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border-radius: 14px;
+  background: var(--card-bg);
+  box-shadow: 0 10px 30px rgba(20,40,70,0.08);
+  border: 1px solid var(--panel-border);
+}
+
+/* ajustar contador para ocupar separado dentro de la card */
+.counters.counters-card .counter { background: transparent; padding: 0; min-width: unset; text-align: left; display: flex; flex-direction: column; justify-content: center; flex: 1; }
+.counters.counters-card .counter + .counter { border-left: 1px solid rgba(0,0,0,0.04); padding-left: 18px; }
+.counters.counters-card .counter:last-child { align-items: flex-end; text-align: right; padding-left: 0; }
+
+/* Labels: misma tipografía/weight que el saludo y color gris usado en el mensaje vacío */
+.counters.counters-card .label {
+  /* Hereda la familia; usamos un peso similar al h1 */
+  font-family: inherit;
+  font-weight: 400; /* similar a la tipografía del saludo */
+  color: var(--muted);
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+/* Valores: por defecto texto oscuro; completadas usa color success */
+.counters.counters-card .value {
+  color: var(--text); /* gris oscuro para el número por defecto (pendientes) */
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+}
+.counters.counters-card .value.green { color: var(--success); }
+
+@media (max-width: 640px) {
+  .hero-inner { align-items: center; }
+  .counters.counters-card { flex-direction: column; gap: 8px; padding: 12px; }
+  .counters.counters-card .value { font-size: 28px; }
+  .counters.counters-card .counter + .counter { border-left: none; padding-left: 0; }
+  .counters.counters-card .counter { align-items: center; text-align: center; }
+}
+
+/* -------------------------
+   Componentes reutilizables
+   - card: fondo blanco, borde redondeado y sombra ligera
+   - flex: utilidades flex básicas
+   ------------------------- */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--panel-border);
+}
+
+/* utilidad flex básica */
+.flex { display: flex; }
+.flex-center { display:flex; align-items:center; justify-content:center; }
+.flex-column { display:flex; flex-direction:column; }
+
+/* -------------------------
+   Componentes / Formulario y filtros
+   ------------------------- */
+.add { display: flex; flex-direction: column; gap: var(--gap); }
 .add-form { display: flex; gap: 8px; }
-.add-form input { flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #e3e7ee; background: white; }
-.btn-add { width: 48px; border-radius: 10px; background: #1976d2; color: white; border: none; font-size: 20px; }
+.add-form input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--input-border);
+  background: var(--card-bg);
+}
+.btn-add {
+  width: 48px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-size: 20px;
+}
 .filters { display: flex; gap: 8px; }
-.filters button { padding: 8px 12px; border-radius: 8px; border: 1px solid #e3e7ee; background: white; }
-.filters .active { background: #1976d2; color: white; border-color: #1976d2; }
+.filters button {
+  padding: 8px 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--card-bg);
+}
+.filters .active { background: var(--primary); color: white; border-color: var(--primary); }
 
+/* -------------------------
+   Lista de tareas
+   ------------------------- */
 .tasks { margin-top: 6px; }
 .tasks ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-.tasks li { background: white; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eef2f6; }
+.tasks li {
+  background: var(--card-bg);
+  padding: 12px;
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--panel-border);
+}
 .tasks li.done .text { text-decoration: line-through; color: #777; }
 .tasks .text { margin-left: 8px; }
 .actions button { margin-left: 6px; background: transparent; border: none; cursor: pointer; }
-.empty { text-align: center; padding: 36px 12px; color: #7a8aa3; }
+
+/* Estado vacío */
+.empty { text-align: center; padding: 36px 12px; color: var(--muted); }
 .empty-ico { font-size: 36px; margin-bottom: 8px; }
 
-.footer { text-align: center; padding: 12px 0; color: #8b98ad; font-size: 13px; }
+/* Footer */
+.footer { text-align: center; padding: 12px 0; color: var(--muted-2); font-size: 13px; }
 
+/* -------------------------
+   Utilidades extras (pequeñas helpers)
+   ------------------------- */
+.mt-sm { margin-top: 8px; }
+.mb-sm { margin-bottom: 8px; }
+.p-sm { padding: 8px; }
+.rounded-lg { border-radius: var(--radius-lg); }
+
+/* -------------------------
+   Responsive
+   ------------------------- */
 @media (max-width: 640px) {
   .hero-inner { flex-direction: column; align-items: flex-start; }
   .counters { width: 100%; justify-content: space-between; }
 }
 
+/* -------------------------
+   Modal (edición de tarea)
+   ------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,20,30,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+.modal {
+  width: 420px;
+  max-width: calc(100% - 32px);
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px 18px;
+  box-shadow: 0 10px 40px rgba(10,20,30,0.25);
+  position: relative;
+}
+.modal h3 { margin: 0 0 12px; font-size: 18px; }
+.modal-close {
+  position: absolute; top: 10px; right: 10px; border: none; background: transparent; font-size: 20px; cursor: pointer;
+}
+.modal-form { display: flex; flex-direction: column; gap: 12px; }
+/* Hago que las labels del modal usen la misma tipografía/estilo que la etiqueta 'Prioridad' */
+.modal-form label { display: flex; flex-direction: column; font-size: 14px; color: var(--muted); font-weight: 500; }
+
+/* Input del título con mismo diseño que el .selected del select personalizado */
+.selected-input {
+  margin-top: 8px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--card-bg); font-size: 14px; color: var(--muted); font-weight: 500;
+}
+.selected-input::placeholder { color: var(--muted-2); font-weight: 400; }
+
+/* Ajustar el texto del select (prioridad) para que tenga la misma tipografía */
+.custom-select .selected { color: var(--muted); font-weight: 500; font-size: 14px; }
+
+/* Campo de fecha: consistente con el diseño y con icono a la derecha */
+.date-input-field { position: relative; padding: 10px 36px 10px 12px; border-radius: 8px; border: 1px solid var(--input-border); background: #fff; cursor: pointer; font-size: 14px; color: var(--muted); font-weight: 500; }
+.date-input-field::after { content: '📅'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; }
+
+.modal-actions { display:flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+.btn-primary {
+  background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;
+}
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--input-border); padding: 9px 14px; border-radius: 8px; cursor: pointer; }
+
+@media (max-width: 480px) {
+  .modal { width: 92%; padding: 16px; }
+  .modal h3 { font-size: 16px; }
+}
+
+/* -------------------------
+   Select personalizado - Prioridad (barra de color arriba al hacer hover)
+   - se usa en el modal de creación
+   ------------------------- */
+.custom-select { position: relative; width: 100%; margin-top: 8px; }
+.custom-select .selected {
+  display: flex; align-items: center; justify-content: flex-start; gap: 8px;
+  padding: 10px 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--card-bg); cursor: pointer;
+  font-size: 14px; text-transform: capitalize;
+}
+.priority-options {
+  position: absolute; left: 0; right: 0; top: calc(100% + 8px);
+  background: var(--card-bg); border: 1px solid var(--input-border); border-radius: 8px; box-shadow: var(--shadow);
+  list-style: none; padding: 6px; margin: 0; display: none; z-index: 1300;
+}
+.priority-options.open { display: block; }
+.priority-option {
+  padding: 10px 12px; border-radius: 6px; cursor: pointer; position: relative; overflow: hidden; margin-bottom: 6px;
+}
+.priority-option:last-child { margin-bottom: 0; }
+.priority-option::before {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0; height: 4px; /* moved from top:0 to bottom:0 */
+  transform: scaleX(0); transform-origin: left; transition: transform .50s ease;
+}
+.priority-option:hover::before { transform: scaleX(1); }
+.priority-option[data-priority="baja"]::before { background: var(--hero-start); }
+.priority-option[data-priority="media"]::before { background: #fbc02d; }
+.priority-option[data-priority="alta"]::before { background: #ef5350; }
+.priority-option:hover { background: rgba(0,0,0,0.06); }
+
+/* pequeño indicador de color dentro de la opción (lado izquierdo) */
+.priority-option .dot {
+  width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; flex: 0 0 auto;
+}
+.priority-option[data-priority="baja"] .dot { background: var(--hero-start); }
+.priority-option[data-priority="media"] .dot { background: #fbc02d; }
+.priority-option[data-priority="alta"] .dot { background: #ef5350; }
+
+/* asegurar contraste para contador pendientes (en caso de fondos oscuros) */
+.counters.counters-card .value { color: var(--text); }
+
+/* -------------------------
+   Componente: Calendar
+   ------------------------- */
+.calendar {
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+}
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.calendar-title { font-weight: 600; text-transform: capitalize; color: var(--text); }
+.cal-nav {
+  background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--muted);
+}
+.calendar-grid { display: flex; flex-direction: column; gap: 6px; }
+.calendar-weeknames { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 4px; }
+.cal-weekname { text-align: center; font-size: 12px; color: var(--muted); }
+.calendar-days { display: grid; gap: 6px; }
+.cal-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal-day {
+  background: transparent; border: none; padding: 8px 6px; border-radius: 8px; cursor: pointer; text-align: center; font-size: 14px; color: var(--text);
+}
+.cal-day.muted { color: rgba(34,34,34,0.3); }
+.cal-day:hover { background: rgba(0,0,0,0.03); }
+.cal-day.selected {
+  background: linear-gradient(90deg, var(--hero-start), var(--hero-end));
+  color: white; font-weight: 700; box-shadow: 0 6px 16px rgba(20,40,70,0.12);
+}
+.cal-day.today { outline: 1px solid rgba(25,118,210,0.18); border-radius: 8px; }
+
+/* ajuste del popover: alinearlo con el campo y hacer que ocupe su ancho */
+.calendar-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1400;
+  width: 100%; /* ahora ocupa exactamente el ancho del contenedor (.date-input) */
+  max-width: none;
+  box-shadow: 0 12px 30px rgba(20,40,70,0.08);
+  border-radius: 10px;
+  overflow: visible;
+}
+
+/* Animaciones suaves para abrir/cerrar el popover del calendario */
+.calendar-popover {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.985);
+  transition: opacity .18s ease, transform .18s ease;
+  pointer-events: none;
+}
+.calendar-popover.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.calendar-popover.closing {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.985);
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .calendar-popover { width: 100%; }
+}
+
+/* Hover azul en días del mes actual (no muted) - más específico y sin !important */
+.calendar .cal-week .cal-day:not(.muted):hover {
+  background: rgba(var(--hero-start-rgb), 0.12);
+  color: var(--hero-start);
+  font-weight: 700;
+}
+
+/* Asegurar que el día seleccionado sigue con estilo fuerte (fondo azul sólido y número blanco) */
+.cal-day.selected { background: linear-gradient(90deg, var(--hero-start), var(--hero-end)); color: white; font-weight: 700; }
+
+/* -------------------------
+   End Calendar styles
+   ------------------------- */
